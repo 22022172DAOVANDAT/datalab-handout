@@ -248,8 +248,16 @@ int isAsciiDigit(int x) {/*0x31 = 0011 0001 --> 0x39 = 0011 1001 */
  *   Max ops: 16
  *   Rating: 3
  */
-int conditional(int x, int y, int z) {
-  return 2;
+int conditional(int x, int y, int z) {/*(0xFFFFFFFF&y)|(0x00000000&z)=y*/
+  /*Chuyen doi ve 1 bit 0 or 1*/
+  int x_status = !x;
+  /*Đưa lên bit dấu thực hiện bước sau*/
+  int start_bit = x_status<<31;
+  /*Copy start bit xuong toan bo make mask 0xFFFFFFFF or 0x00000000*/
+  int mask = start_bit>>31;
+  /*Thuc hien phep toan ban dau*/
+  return (mask & z)|(~mask & y);
+
 }
 /* 
  * isLessOrEqual - if x <= y  then return 1, else return 0 
