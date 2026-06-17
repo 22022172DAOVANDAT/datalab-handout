@@ -292,7 +292,19 @@ int isLessOrEqual(int x, int y) {/*2 truong hop cung dau va khac dau*/
  *   Rating: 4 
  */
 int logicalNeg(int x) {
-  return 2;
+  /*start_bit_x | start_bit_neg_x == 1 if x!=0*/
+  /*strat_bit_x | start_bit_neg_x == 0 if x==0*/
+  int Neg_x = ~x +1; /*Bù 2 lấy số âm*/
+  /*Lấy 2 dấu start_bit_x or start_bit_neg_x*/
+  int combined_start_bit = x|Neg_x;
+  /*Dịch phải 31 bit copy start_bit*/
+  /*x != 0, dịch phải là -1 0XFFFFFFFF*/
+  /*x == 0, dịch phải là 0 0x00000000*/
+  int result = combined_start_bit >>31;
+
+  /*x !=0, return 0 = result +1*/
+  /*x ==0, return 1 = result +1*/
+  return result+1;
 }
 /* howManyBits - return the minimum number of bits required to represent x in
  *             two's complement
