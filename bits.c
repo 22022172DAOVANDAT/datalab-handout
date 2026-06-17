@@ -193,7 +193,16 @@ int isTmax(int x) {/*Tmax = 0xFFFFFFFF,0x111..111*/
  *   Rating: 2
  */
 int allOddBits(int x) {
-  return 2;
+  int mask = 0xAA;/*0xAA = 10101010 < 255*/
+  mask = (mask<<8)|0xAA;/*Upto 16bit 0xAAAA*/
+  mask = (mask<<16)|mask;/*Upto 32bit 0xAAAAAAAA*/
+  /*Lọc bit lẻ, bit chan == 0*/
+  int odd_bits=x&mask;
+  /*Check odd_bits == mask*/
+  int check_odd = odd_bits ^ mask;
+
+  return !check_odd;
+
 }
 /* 
  * negate - return -x 
