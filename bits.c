@@ -388,7 +388,31 @@ unsigned floatScale2(unsigned uf) {
  *   Rating: 4
  */
 int floatFloat2Int(unsigned uf) {
-  return 2;
+  /*Tách các phần để lấy chuyển thành số thực*/
+  unsigned sign = uf & 0x80000000;
+  unsigned exp = (uf>>23)&0xFF;
+  unsigned frac = uf & 0x7FFFFF;
+  int E = exp -127;
+  unsigned mantissa;
+  /*Số quá nhỏ exp < 1 => số 0*/
+  if(E<0){
+  return 0;
+  }
+  /*Số quá lớn E > 31 => chuyển về số vô cùng siêu lớn*/
+  if(E>31){
+    return 0x80000000;
+  }
+  /*Thêm bit 1 bit thứ 23 trước dấu phẩy đánh dấu phần thập phần*/
+  mantissa = frac | 0x00800000;
+  if(E>23){
+    mantissa = mantissa << (E-23);/*Nhân số lên 2^E lần*/
+  }else{
+    mantissa = mantissa >>(23-E);/*Dịch phải giảm đi 2^E lần*/
+  }
+  if(sign){
+    return -mantissa;
+  }
+  return mantissa;
 }
 /* 
  * floatPower2 - Return bit-level equivalent of the expression 2.0^x
