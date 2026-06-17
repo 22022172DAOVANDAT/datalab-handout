@@ -257,7 +257,6 @@ int conditional(int x, int y, int z) {/*(0xFFFFFFFF&y)|(0x00000000&z)=y*/
   int mask = start_bit>>31;
   /*Thuc hien phep toan ban dau*/
   return (mask & z)|(~mask & y);
-
 }
 /* 
  * isLessOrEqual - if x <= y  then return 1, else return 0 
@@ -266,8 +265,22 @@ int conditional(int x, int y, int z) {/*(0xFFFFFFFF&y)|(0x00000000&z)=y*/
  *   Max ops: 24
  *   Rating: 3
  */
-int isLessOrEqual(int x, int y) {
-  return 2;
+int isLessOrEqual(int x, int y) {/*2 truong hop cung dau va khac dau*/
+  /*Lay bit start xac dinh dau cua x,y*/
+  int start_x=(x>>31)&1;
+  int start_y=(y>>31)&1;
+  /*Kiem tra cung dau hay khong*/
+  int is_diff_start = start_x^start_y;
+  /*TH1 (khau dau) x<=y khi start_x == 1 => Giu lai dau cua x*/
+  int case_diff_start = is_diff_start&start_x;
+  /*TH2 (cung dau) tinh y-x*/
+  int sub = y+(~x+1);
+  /*Lay bit dấu cua sub. Neu sub >=0 start_bit_sub == 0 */
+  int start_bit_sub = (sub>>31)&1;
+  /*TH2 đúng: Cùng dấu (is_diff_start) == 0 and start_bit_sub == 0*/
+  int case_same_start = (!is_diff_start)&(!start_bit_sub);
+  
+  return case_diff_start|case_same_start;
 }
 //4
 /* 
