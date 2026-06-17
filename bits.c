@@ -361,7 +361,19 @@ int howManyBits(int x) {/*tìm bit 1 cao nhất binary search*/
  *   Rating: 4
  */
 unsigned floatScale2(unsigned uf) {
-  return 2;
+  /*Chia số thực thành 3 phần*/
+  unsigned sign = uf&0x80000000;
+  unsigned exp = (uf >>23) & 0xFF;
+  unsigned frac = uf & 0x7FFFFF;
+  /*TH1: Số vô cùng Scale vẫn vô cùng*/
+  if(exp == 0xFF) return uf;
+  /*TH2: Số siêu nhỏ tiệm cận 0 => dịch trái 1 bit là x2*/
+  if(exp==0) return sign | (uf << 1);/*Giu nguyên dấu của số*/
+  /*TH3 Số bình thường => tăng số mũ lên 1 = x2 lần*/
+  exp = exp +1 ;
+  if (exp == 0xFF) frac = 0;
+  /*Khi tang len tràn số 255 => số thành vô cùng*/
+  return sign | (exp <<23)|frac;
 }
 /* 
  * floatFloat2Int - Return bit-level equivalent of expression (int) f
