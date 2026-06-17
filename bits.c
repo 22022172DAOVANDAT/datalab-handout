@@ -212,7 +212,10 @@ int allOddBits(int x) {
  *   Rating: 2
  */
 int negate(int x) {
-  return 2;
+  /*Đảo ngược toàn bộ bit*/
+  int flipped = ~x;
+  /*Cộng thêm 1 = phép bù 2*/
+  return flipped + 1;
 }
 //3
 /* 
