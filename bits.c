@@ -157,9 +157,11 @@ int bitXor(int x, int y) {
  *   Rating: 1
  */
 int tmin(void) {
-
-  return 2;
-
+  /*Khoi tao bit ban dau 1*/
+  int startbit = 1;
+  /*Dich trai 31 de vao bit Start - Dấu*/
+  return startbit << 31 ;
+  /*Chuoi bit dang: 100...000 (HEX 0x80000000)*/
 }
 //2
 /*
