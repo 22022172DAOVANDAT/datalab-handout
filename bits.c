@@ -161,7 +161,7 @@ int tmin(void) {
   int startbit = 1;
   /*Dich trai 31 de vao bit Start - Dấu*/
   return startbit << 31 ;
-  /*Chuoi bit dang: 100...000 (HEX 0x80000000)*/
+  /*Chuoi bit dang: 100...000 */
 }
 //2
 /*
@@ -171,8 +171,18 @@ int tmin(void) {
  *   Max ops: 10
  *   Rating: 1
  */
-int isTmax(int x) {
-  return 2;
+int isTmax(int x) {/*Tmax = 0xFFFFFFFF,0x111..111*/
+  /*x is Tmax, +1 overflow x_plus = Tmin*/
+  int x_plus_1 = x+1;
+  /*x is Tmax, flipped = Tmax*/
+  int flipped = ~x_plus_1;
+  /*So sanh x and flipped*/
+  /*Same is_equal == 0*/
+  int is_equal = !(x^flipped);
+  /*Loai tru truong hop x=-1, x+1 = 0, flipped = 0xFFFFFFFF*/
+  int not_minus_1 = !!x_plus_1;
+  /*Ket hop 2 dieu kien*/
+  return is_equal&not_minus_1;
 }
 /* 
  * allOddBits - return 1 if all odd-numbered bits in word set to 1
