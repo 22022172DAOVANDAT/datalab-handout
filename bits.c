@@ -194,12 +194,14 @@ int isTmax(int x) {/*Tmax = 0xFFFFFFFF,0x111..111*/
  */
 int allOddBits(int x) {
   int mask = 0xAA;/*0xAA = 10101010 < 255*/
+  int odd_bits;
+  int check_odd;
   mask = (mask<<8)|0xAA;/*Upto 16bit 0xAAAA*/
   mask = (mask<<16)|mask;/*Upto 32bit 0xAAAAAAAA*/
   /*Lọc bit lẻ, bit chan == 0*/
-  int odd_bits=x&mask;
+  odd_bits=x&mask;
   /*Check odd_bits == mask*/
-  int check_odd = odd_bits ^ mask;
+  check_odd = odd_bits ^ mask;
 
   return !check_odd;
 
@@ -318,8 +320,33 @@ int logicalNeg(int x) {
  *  Max ops: 90
  *  Rating: 4
  */
-int howManyBits(int x) {
-  return 0;
+int howManyBits(int x) {/*tìm bit 1 cao nhất binary search*/
+  int start_bit, b16,b8,b4,b2,b1,b0;
+  /*Xác định dấu của số*/
+  start_bit = x>>31;
+  /*Nếu âm đảo bit, nếu dương giữ nguyên*/
+  x= (start_bit & ~x)|(~start_bit & x);
+  b16 = !(!(x>>16))<<4;/*Xác định 16 bit đầu có bit 1 hay không*/
+  /*Nếu 16 bit đầu có chứa 1 => !!(x>>16) =1 dịch trái 4 thì b16=16 bit 1 nằm trong 16 bit đầu*/
+  /*Nếu 16 bit đầu không chứa 1 => !!(x>>16) =0 dịch trái 4 vẫn là 0*/
+  x=x>>b16;
+  /*Nếu có bit 1 trong 16 bit đầu bỏ qua 16 bit sau tiếp tục tìm*/
+  /*Nếu không có bit 1 trong 16 bit đầu giữ nguyên x tìm trong 16 bit sau*/
+  b8 =(!!(x>>8))<<3;
+  x=x>>b8;
+  /* Tương tụ thực hiện phân chia tìm bit 1*/
+  b4 = (!!(x>>4))<<2;
+  x=x>>b4;
+
+  b2 = (!!(x>>2))<<1;
+  x=x>>b2;
+
+  b1 = (!!(x>>1));
+  x=x>>b1;
+
+  b0=x;
+
+  return b16+b8+b4+b2+b1+b0+1;
 }
 //float
 /* 
