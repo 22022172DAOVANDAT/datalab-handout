@@ -227,8 +227,19 @@ int negate(int x) {
  *   Max ops: 15
  *   Rating: 3
  */
-int isAsciiDigit(int x) {
-  return 2;
+int isAsciiDigit(int x) {/*0x31 = 0011 0001 --> 0x39 = 0011 1001 */
+  /*Dich phai 4 bit kiem tra 4 bit dau*/
+  int upper_bits = x>>4;
+  int is_upper_3 = !(upper_bits ^ 0x3);
+  /*Loc 4 bit sau cua x & 1111*/
+  int lower_bits = x&0xF;
+  /*Tinh hieu 9 - lower_bits*/
+  int sub = 9 + (~lower_bits+1);
+  /*Kiem tra Start Bit, dấu la 0 or 1*/
+  /*Dich phai 31 bit */
+  int is_0 = !((sub >> 31)&1);
+  /*Reurn 1 khi both is true*/
+  return is_upper_3&is_0;
 }
 /* 
  * conditional - same as x ? y : z 
