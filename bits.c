@@ -427,6 +427,17 @@ int floatFloat2Int(unsigned uf) {
  *   Max ops: 30 
  *   Rating: 4
  */
-unsigned floatPower2(int x) {
-    return 2;
+unsigned floatPower2(int x) {/*1.frac*2^exp-127; x=exp-127, frac = 0*/
+    if(x>127){
+      return 0x7F800000;/*Too Large return +INF*/
+    }
+    if(x>=-126){/*Vung so thong thuong*/
+      int exp = x+127;
+      return exp <<23;/*Dich trai 23 bit ve phan mu exp*/
+    }
+    if(x>=-149){/*exp < 0 cho co phan frac bieu dien*/
+      return 1 << (x+149);/*dich bit 1 vao frac bieu dien*/
+    }
+    /*Qua nho return 0*/
+    return 0;
 }
