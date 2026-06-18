@@ -145,8 +145,10 @@ NOTES:
 int bitXor(int x, int y) {
   /*Bit x and y = 1*/
   int both_1 = x&y;
+
   /*Bit x and y = 0*/
   int both_0 = (~x)&(~y);
+
   /*XOR Bit x and y không trùng nhau*/
   return (~both_0)&(~both_1);
 }
@@ -159,6 +161,7 @@ int bitXor(int x, int y) {
 int tmin(void) {
   /*Khoi tao bit ban dau 1*/
   int startbit = 1;
+
   /*Dich trai 31 de vao bit Start - Dấu*/
   return startbit << 31 ;
   /*Chuoi bit dang: 100...000 */
@@ -174,13 +177,17 @@ int tmin(void) {
 int isTmax(int x) {/*Tmax = 0xFFFFFFFF,0x111..111*/
   /*x is Tmax, +1 overflow x_plus = Tmin*/
   int x_plus_1 = x+1;
+
   /*x is Tmax, flipped = Tmax*/
   int flipped = ~x_plus_1;
+
   /*So sanh x and flipped*/
   /*Same is_equal == 0*/
   int is_equal = !(x^flipped);
+
   /*Loai tru truong hop x=-1, x+1 = 0, flipped = 0xFFFFFFFF*/
   int not_minus_1 = !!x_plus_1;
+
   /*Ket hop 2 dieu kien*/
   return is_equal&not_minus_1;
 }
@@ -196,15 +203,18 @@ int allOddBits(int x) {
   int mask = 0xAA;/*0xAA = 10101010 < 255*/
   int odd_bits;
   int check_odd;
+
   mask = (mask<<8)|0xAA;/*Upto 16bit 0xAAAA*/
+
   mask = (mask<<16)|mask;/*Upto 32bit 0xAAAAAAAA*/
+
   /*Lọc bit lẻ, bit chan == 0*/
   odd_bits=x&mask;
+
   /*Check odd_bits == mask*/
   check_odd = odd_bits ^ mask;
 
   return !check_odd;
-
 }
 /* 
  * negate - return -x 
@@ -216,6 +226,7 @@ int allOddBits(int x) {
 int negate(int x) {
   /*Đảo ngược toàn bộ bit*/
   int flipped = ~x;
+
   /*Cộng thêm 1 = phép bù 2*/
   return flipped + 1;
 }
@@ -229,17 +240,21 @@ int negate(int x) {
  *   Max ops: 15
  *   Rating: 3
  */
-int isAsciiDigit(int x) {/*0x31 = 0011 0001 --> 0x39 = 0011 1001 */
-  /*Dich phai 4 bit kiem tra 4 bit dau*/
+int isAsciiDigit(int x) {/*0x31 = 0011 0001 --> 0x39 = 0011 1001 dạng 0011 xxxx (0->9) */
+  /*Dich phai 4 bit kiem tra 4 bit đầu*/
   int upper_bits = x>>4;
   int is_upper_3 = !(upper_bits ^ 0x3);
+
   /*Loc 4 bit sau cua x & 1111*/
   int lower_bits = x&0xF;
+
   /*Tinh hieu 9 - lower_bits*/
   int sub = 9 + (~lower_bits+1);
+
   /*Kiem tra Start Bit, dấu la 0 or 1*/
   /*Dich phai 31 bit */
   int is_0 = !((sub >> 31)&1);
+
   /*Reurn 1 khi both is true*/
   return is_upper_3&is_0;
 }
@@ -253,10 +268,13 @@ int isAsciiDigit(int x) {/*0x31 = 0011 0001 --> 0x39 = 0011 1001 */
 int conditional(int x, int y, int z) {/*(0xFFFFFFFF&y)|(0x00000000&z)=y*/
   /*Chuyen doi ve 1 bit 0 or 1*/
   int x_status = !x;
+
   /*Đưa lên bit dấu thực hiện bước sau*/
   int start_bit = x_status<<31;
+
   /*Copy start bit xuong toan bo make mask 0xFFFFFFFF or 0x00000000*/
   int mask = start_bit>>31;
+
   /*Thuc hien phep toan ban dau*/
   return (mask & z)|(~mask & y);
 }
@@ -271,14 +289,19 @@ int isLessOrEqual(int x, int y) {/*2 truong hop cung dau va khac dau*/
   /*Lay bit start xac dinh dau cua x,y*/
   int start_x=(x>>31)&1;
   int start_y=(y>>31)&1;
+
   /*Kiem tra cung dau hay khong*/
   int is_diff_start = start_x^start_y;
+
   /*TH1 (khau dau) x<=y khi start_x == 1 => Giu lai dau cua x*/
   int case_diff_start = is_diff_start&start_x;
+
   /*TH2 (cung dau) tinh y-x*/
   int sub = y+(~x+1);
+
   /*Lay bit dấu cua sub. Neu sub >=0 start_bit_sub == 0 */
   int start_bit_sub = (sub>>31)&1;
+
   /*TH2 đúng: Cùng dấu (is_diff_start) == 0 and start_bit_sub == 0*/
   int case_same_start = (!is_diff_start)&(!start_bit_sub);
   
@@ -297,8 +320,10 @@ int logicalNeg(int x) {
   /*start_bit_x | start_bit_neg_x == 1 if x!=0*/
   /*strat_bit_x | start_bit_neg_x == 0 if x==0*/
   int Neg_x = ~x +1; /*Bù 2 lấy số âm*/
+
   /*Lấy 2 dấu start_bit_x or start_bit_neg_x*/
   int combined_start_bit = x|Neg_x;
+  
   /*Dịch phải 31 bit copy start_bit*/
   /*x != 0, dịch phải là -1 0XFFFFFFFF*/
   /*x == 0, dịch phải là 0 0x00000000*/
@@ -322,19 +347,24 @@ int logicalNeg(int x) {
  */
 int howManyBits(int x) {/*tìm bit 1 cao nhất binary search*/
   int start_bit, b16,b8,b4,b2,b1,b0;
+
   /*Xác định dấu của số*/
   start_bit = x>>31;
+
   /*Nếu âm đảo bit, nếu dương giữ nguyên*/
   x= (start_bit & ~x)|(~start_bit & x);
+
   b16 = !(!(x>>16))<<4;/*Xác định 16 bit đầu có bit 1 hay không*/
   /*Nếu 16 bit đầu có chứa 1 => !!(x>>16) =1 dịch trái 4 thì b16=16 bit 1 nằm trong 16 bit đầu*/
   /*Nếu 16 bit đầu không chứa 1 => !!(x>>16) =0 dịch trái 4 vẫn là 0*/
   x=x>>b16;
   /*Nếu có bit 1 trong 16 bit đầu bỏ qua 16 bit sau tiếp tục tìm*/
   /*Nếu không có bit 1 trong 16 bit đầu giữ nguyên x tìm trong 16 bit sau*/
+
+  /* Tương tụ thực hiện phân chia tìm bit 1*/
   b8 =(!!(x>>8))<<3;
   x=x>>b8;
-  /* Tương tụ thực hiện phân chia tìm bit 1*/
+  
   b4 = (!!(x>>4))<<2;
   x=x>>b4;
 
@@ -365,14 +395,18 @@ unsigned floatScale2(unsigned uf) {
   unsigned sign = uf&0x80000000;
   unsigned exp = (uf >>23) & 0xFF;
   unsigned frac = uf & 0x7FFFFF;
+
   /*TH1: Số vô cùng Scale vẫn vô cùng*/
   if(exp == 0xFF) return uf;
+
   /*TH2: Số siêu nhỏ tiệm cận 0 => dịch trái 1 bit là x2*/
   if(exp==0) return sign | (uf << 1);/*Giu nguyên dấu của số*/
+
   /*TH3 Số bình thường => tăng số mũ lên 1 = x2 lần*/
   exp = exp +1 ;
   if (exp == 0xFF) frac = 0;
   /*Khi tang len tràn số 255 => số thành vô cùng*/
+
   return sign | (exp <<23)|frac;
 }
 /* 
@@ -394,14 +428,17 @@ int floatFloat2Int(unsigned uf) {
   unsigned frac = uf & 0x7FFFFF;
   int E = exp -127;
   unsigned mantissa;
+
   /*Số quá nhỏ exp < 1 => số 0*/
   if(E<0){
   return 0;
   }
+
   /*Số quá lớn E > 31 => chuyển về số vô cùng siêu lớn*/
   if(E>31){
     return 0x80000000;
   }
+
   /*Thêm bit 1 bit thứ 23 trước dấu phẩy đánh dấu phần thập phần*/
   mantissa = frac | 0x00800000;
   if(E>23){
@@ -409,7 +446,8 @@ int floatFloat2Int(unsigned uf) {
   }else{
     mantissa = mantissa >>(23-E);/*Dịch phải giảm đi 2^E lần*/
   }
-  if(sign){
+
+  if(sign){/*So am đảo dấu*/
     return -mantissa;
   }
   return mantissa;
@@ -431,13 +469,16 @@ unsigned floatPower2(int x) {/*1.frac*2^exp-127; x=exp-127, frac = 0*/
     if(x>127){
       return 0x7F800000;/*Too Large return +INF*/
     }
+
     if(x>=-126){/*Vung so thong thuong*/
       int exp = x+127;
       return exp <<23;/*Dich trai 23 bit ve phan mu exp*/
     }
+
     if(x>=-149){/*exp < 0 cho co phan frac bieu dien*/
       return 1 << (x+149);/*dich bit 1 vao frac bieu dien*/
     }
+    
     /*Qua nho return 0*/
     return 0;
 }
